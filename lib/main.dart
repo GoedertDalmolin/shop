@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       home: ProductsOverviewPage(),
       routes: {
-        AppRoutes.productDetail: (ctx) => ProductDetailPage(),
+        AppRoutes.productDetail: (ctx) => const ProductDetailPage(),
       },
     );
   }
