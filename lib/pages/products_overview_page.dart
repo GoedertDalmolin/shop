@@ -8,8 +8,15 @@ enum FilterOptions {
   all,
 }
 
-class ProductsOverviewPage extends StatelessWidget {
+class ProductsOverviewPage extends StatefulWidget {
   const ProductsOverviewPage({super.key});
+
+  @override
+  State<ProductsOverviewPage> createState() => _ProductsOverviewPageState();
+}
+
+class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
+  bool showFavoriteOnly = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +38,20 @@ class ProductsOverviewPage extends StatelessWidget {
               ),
             ],
             onSelected: (FilterOptions selectedValue) {
-              if(selectedValue == FilterOptions.favorite) {
-                pvProductList.showFavoriteOnly();
-              } else {
-                pvProductList.showFavoriteAll();
-              }
+              setState(() {
+                if (selectedValue == FilterOptions.favorite) {
+                  showFavoriteOnly = true;
+                } else {
+                  showFavoriteOnly = false;
+                }
+              });
             },
           ),
         ],
       ),
-      body: const ProductGrid(),
+      body:  ProductGrid(
+        showFavoriteOnly: showFavoriteOnly,
+      ),
     );
   }
 }
