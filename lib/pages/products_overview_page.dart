@@ -4,6 +4,7 @@ import 'package:shop/components/badgee.dart';
 import 'package:shop/models/cart.dart';
 import 'package:shop/models/product_list.dart';
 import 'package:shop/pages/product_grid.dart';
+import 'package:shop/utils/app_routes.dart';
 
 enum FilterOptions {
   favorite,
@@ -30,8 +31,10 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
         actions: [
           Consumer<Cart>(
               child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.shopping_cart),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.cart);
+                },
+                icon: const Icon(Icons.shopping_cart),
               ),
               builder: (ctx, cart, chld) {
                 return Badgee(
