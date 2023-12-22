@@ -38,7 +38,7 @@ class Cart with ChangeNotifier {
         ),
       );
     } else {
-      items.putIfAbsent(
+      _items.putIfAbsent(
         product.id,
         () => CartItem(
           id: Random().nextDouble().toString(),

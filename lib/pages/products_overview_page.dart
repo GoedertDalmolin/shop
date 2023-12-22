@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/components/badgee.dart';
+import 'package:shop/models/cart.dart';
 import 'package:shop/models/product_list.dart';
 import 'package:shop/pages/product_grid.dart';
 
@@ -26,6 +28,17 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
       appBar: AppBar(
         title: const Text('Minha Loja'),
         actions: [
+          Consumer<Cart>(
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.shopping_cart),
+              ),
+              builder: (ctx, cart, chld) {
+                return Badgee(
+                  value: cart.itemsCount.toString(),
+                  child: chld!,
+                );
+              }),
           PopupMenuButton(
             itemBuilder: (ctx) => [
               const PopupMenuItem(
@@ -49,7 +62,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
         ],
       ),
-      body:  ProductGrid(
+      body: ProductGrid(
         showFavoriteOnly: showFavoriteOnly,
       ),
     );
