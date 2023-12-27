@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/components/cart_item.dart';
 import 'package:shop/models/cart.dart';
 
 class CartPage extends StatelessWidget {
@@ -8,6 +9,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    final items = cart.items.values.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -16,12 +18,15 @@ class CartPage extends StatelessWidget {
       body: Column(
         children: [
           Card(
-            margin: EdgeInsets.all(25),
+            margin: EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 25,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
+                const Padding(
+                  padding: EdgeInsets.all(10.0),
                   child: Text(
                     'Total',
                     style: TextStyle(
@@ -29,7 +34,7 @@ class CartPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Chip(
@@ -39,14 +44,23 @@ class CartPage extends StatelessWidget {
                     style: Theme.of(context).primaryTextTheme.bodyLarge!.copyWith(color: Colors.black),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 TextButton(
                   onPressed: () {},
-                  child: Text('Comprar'),
                   style: TextButton.styleFrom(textStyle: TextStyle(color: Theme.of(context).primaryColor)),
+                  child: const Text('Comprar'),
                 ),
               ],
             ),
+          ),
+          Expanded(
+            child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (ctx, index) {
+                  return CartItemWidget(
+                    cartItem: items[index],
+                  );
+                }),
           )
         ],
       ),
