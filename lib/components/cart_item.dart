@@ -18,15 +18,15 @@ class CartItemWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         color: Theme.of(context).colorScheme.error,
-        child: Icon(
-          Icons.delete,
-          color: Colors.white,
-        ),
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
+        padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.symmetric(
           horizontal: 15,
           vertical: 4,
+        ),
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
         ),
       ),
       onDismissed: (_) {
@@ -42,12 +42,12 @@ class CartItemWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: FittedBox(
-                child: Text(cartItem.price.toString()),
+                child: Text(cartItem.price.toStringAsFixed(2)),
               ),
             ),
           ),
           title: Text(cartItem.productName),
-          subtitle: Text('Total: R\$ ${cartItem.price * cartItem.quantity}'),
+          subtitle: Text('Total: R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
           trailing: Text('${cartItem.quantity}x'),
         ),
       ),

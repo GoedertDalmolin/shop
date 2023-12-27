@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/components/app_drawer.dart';
 import 'package:shop/components/badgee.dart';
 import 'package:shop/models/cart.dart';
-import 'package:shop/models/product_list.dart';
 import 'package:shop/pages/product_grid.dart';
 import 'package:shop/utils/app_routes.dart';
 
@@ -23,7 +23,6 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pvProductList = Provider.of<ProductList>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -65,6 +64,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
         ],
       ),
+      drawer: const AppDrawer(),
       body: ProductGrid(
         showFavoriteOnly: showFavoriteOnly,
       ),
