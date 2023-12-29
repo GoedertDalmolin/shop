@@ -35,6 +35,8 @@ class ProductGridItem extends StatelessWidget {
               // color: Colors.amberAccent,
             ),
             onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: const Text(
