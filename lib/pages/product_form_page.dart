@@ -42,6 +42,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
 
   onSubmitForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
     _formKey.currentState?.save();
 
     final newProduct = Product(
@@ -53,6 +59,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
     );
 
     debugPrint(newProduct.toString());
+  }
+
+  bool isValidImageUrl(String url) {
+    bool isValidUrl = Uri.tryParse(url)?.hasAbsolutePath ?? false;
+
+    bool endsWithFile = url.toLowerCase().endsWith('.png') || url.toLowerCase().endsWith('.jpg') || url.toLowerCase().endsWith('.jpeg');
+
+    return isValidUrl && endsWithFile;
   }
 
   @override
@@ -80,6 +94,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   _priceFocus.requestFocus();
                 },
                 onSaved: (name) => _formData['name'] = name ?? '',
+                validator: (nameValidator) {
+                  final name = nameValidator ?? '';
+
+                  if (name.trim().isEmpty) {
+                    return 'Nome é obrigatório';
+                  }
+
+                  if (name.trim().length < 3) {
+                    return 'O nome precisa no mínimo de 3 letras.';
+                  }
+
+                  return null;
+                },
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Preço'),
@@ -89,7 +116,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 onFieldSubmitted: (_) {
                   _descriptionFocus.requestFocus();
                 },
-                onSaved: (price) => _formData['price'] = double.parse(price ?? '0'),
+                onSaved: (price) => _formData['price'] = double.parse(((price ?? '').isEmpty ? '0' : price!)),
+                validator: (priceValidator) {
+                  final priceString = priceValidator ?? '-1';
+
+                  final price = double.tryParse(priceString) ?? -1;
+
+                  if(price <= 0) {
+                    return 'Informe um preço válido!';
+                  }
+
+                  return null;
+                },
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Descrição'),
@@ -101,6 +139,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   _imageUrlFocus.requestFocus();
                 },
                 onSaved: (description) => _formData['description'] = description ?? '',
+                validator: (descriptionValidator) {
+                  final description = descriptionValidator ?? '';
+
+                  if (description.trim().isEmpty) {
+                    return 'Descrição é obrigatório';
+                  }
+
+                  if (description.trim().length < 10) {
+                    return 'A descrição precisa no mínimo de 10 letras.';
+                  }
+
+                  return null;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -117,6 +168,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       },
                       controller: _imageUrlContrller,
                       onSaved: (imageUrl) => _formData['imageUrl'] = imageUrl ?? '',
+                      validator: (imageUrlValidator) {
+                        final imageUrl = imageUrlValidator ?? '';
+
+                        if (!isValidImageUrl(imageUrl)) {
+                          return 'Informe uma Url Válida!!';
+                        }
+
+                        return null;
+                      },
                     ),
                   ),
                   Container(
