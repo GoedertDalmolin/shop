@@ -44,7 +44,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     super.dispose();
   }
 
-  updateImage()  {
+  updateImage() {
     if (isValidImageUrl(_imageUrlContrller.text)) {
       setState(() {});
     }
@@ -63,7 +63,24 @@ class _ProductFormPageState extends State<ProductFormPage> {
       _isLoading = true;
     });
 
-    await Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData);
+    await Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData).catchError((onError) async {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Ocorreu um erro!'),
+              content: Text(onError.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Ok'),
+                )
+              ],
+            );
+          });
+    });
 
     setState(() {
       _isLoading = false;
@@ -112,143 +129,145 @@ class _ProductFormPageState extends State<ProductFormPage> {
           )
         ],
       ),
-      body: _isLoading ? Center(
-        child: CircularProgressIndicator(),
-      ) : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                initialValue: _formData['name'] as String,
-                decoration: const InputDecoration(labelText: 'Nome'),
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  _priceFocus.requestFocus();
-                },
-                onSaved: (name) => _formData['name'] = name ?? '',
-                validator: (nameValidator) {
-                  final name = nameValidator ?? '';
-
-                  if (name.trim().isEmpty) {
-                    return 'Nome é obrigatório';
-                  }
-
-                  if (name.trim().length < 3) {
-                    return 'O nome precisa no mínimo de 3 letras.';
-                  }
-
-                  return null;
-                },
-              ),
-              TextFormField(
-                initialValue: _formData['price'].toString(),
-                decoration: const InputDecoration(labelText: 'Preço'),
-                textInputAction: TextInputAction.next,
-                focusNode: _priceFocus,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                onFieldSubmitted: (_) {
-                  _descriptionFocus.requestFocus();
-                },
-                onSaved: (price) => _formData['price'] = double.parse(((price ?? '').isEmpty ? '0' : price!)),
-                validator: (priceValidator) {
-                  final priceString = priceValidator ?? '-1';
-
-                  final price = double.tryParse(priceString) ?? -1;
-
-                  if (price <= 0) {
-                    return 'Informe um preço válido!';
-                  }
-
-                  return null;
-                },
-              ),
-              TextFormField(
-                initialValue: _formData['description'] as String,
-                decoration: const InputDecoration(labelText: 'Descrição'),
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
-                focusNode: _descriptionFocus,
-                onFieldSubmitted: (_) {
-                  _imageUrlFocus.requestFocus();
-                },
-                onSaved: (description) => _formData['description'] = description ?? '',
-                validator: (descriptionValidator) {
-                  final description = descriptionValidator ?? '';
-
-                  if (description.trim().isEmpty) {
-                    return 'Descrição é obrigatório';
-                  }
-
-                  if (description.trim().length < 10) {
-                    return 'A descrição precisa no mínimo de 10 letras.';
-                  }
-
-                  return null;
-                },
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'Url da imagem'),
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.url,
-                      maxLines: 1,
-                      focusNode: _imageUrlFocus,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      initialValue: _formData['name'] as String,
+                      decoration: const InputDecoration(labelText: 'Nome'),
+                      textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
-                        onSubmitForm();
+                        _priceFocus.requestFocus();
                       },
-                      controller: _imageUrlContrller,
-                      onSaved: (imageUrl) => _formData['imageUrl'] = imageUrl ?? '',
-                      validator: (imageUrlValidator) {
-                        final imageUrl = imageUrlValidator ?? '';
+                      onSaved: (name) => _formData['name'] = name ?? '',
+                      validator: (nameValidator) {
+                        final name = nameValidator ?? '';
 
-                        if (!isValidImageUrl(imageUrl)) {
-                          return 'Informe uma Url Válida!!';
+                        if (name.trim().isEmpty) {
+                          return 'Nome é obrigatório';
+                        }
+
+                        if (name.trim().length < 3) {
+                          return 'O nome precisa no mínimo de 3 letras.';
                         }
 
                         return null;
                       },
                     ),
-                  ),
-                  Container(
-                    height: 100,
-                    width: 100,
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      left: 10,
+                    TextFormField(
+                      initialValue: _formData['price'].toString(),
+                      decoration: const InputDecoration(labelText: 'Preço'),
+                      textInputAction: TextInputAction.next,
+                      focusNode: _priceFocus,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onFieldSubmitted: (_) {
+                        _descriptionFocus.requestFocus();
+                      },
+                      onSaved: (price) => _formData['price'] = double.parse(((price ?? '').isEmpty ? '0' : price!)),
+                      validator: (priceValidator) {
+                        final priceString = priceValidator ?? '-1';
+
+                        final price = double.tryParse(priceString) ?? -1;
+
+                        if (price <= 0) {
+                          return 'Informe um preço válido!';
+                        }
+
+                        return null;
+                      },
                     ),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1)),
-                    alignment: Alignment.center,
-                    child: _imageUrlContrller.text.isEmpty
-                        ? Text(
-                            _imageUrlContrller.text.isEmpty ? 'Informe uma URL' : 'Preview da URL',
-                            textAlign: TextAlign.center,
-                          )
-                        : !isValidImageUrl(_imageUrlContrller.text)
-                            ? const Text(
-                                'Informe uma URL valida!',
-                                textAlign: TextAlign.center,
-                              )
-                            : SizedBox(
-                                height: 100,
-                                width: 100,
-                                child: FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: Image.network(_imageUrlContrller.text),
-                                ),
-                              ),
-                  ),
-                ],
+                    TextFormField(
+                      initialValue: _formData['description'] as String,
+                      decoration: const InputDecoration(labelText: 'Descrição'),
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      focusNode: _descriptionFocus,
+                      onFieldSubmitted: (_) {
+                        _imageUrlFocus.requestFocus();
+                      },
+                      onSaved: (description) => _formData['description'] = description ?? '',
+                      validator: (descriptionValidator) {
+                        final description = descriptionValidator ?? '';
+
+                        if (description.trim().isEmpty) {
+                          return 'Descrição é obrigatório';
+                        }
+
+                        if (description.trim().length < 10) {
+                          return 'A descrição precisa no mínimo de 10 letras.';
+                        }
+
+                        return null;
+                      },
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: const InputDecoration(labelText: 'Url da imagem'),
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.url,
+                            maxLines: 1,
+                            focusNode: _imageUrlFocus,
+                            onFieldSubmitted: (_) {
+                              onSubmitForm();
+                            },
+                            controller: _imageUrlContrller,
+                            onSaved: (imageUrl) => _formData['imageUrl'] = imageUrl ?? '',
+                            validator: (imageUrlValidator) {
+                              final imageUrl = imageUrlValidator ?? '';
+
+                              if (!isValidImageUrl(imageUrl)) {
+                                return 'Informe uma Url Válida!!';
+                              }
+
+                              return null;
+                            },
+                          ),
+                        ),
+                        Container(
+                          height: 100,
+                          width: 100,
+                          margin: const EdgeInsets.only(
+                            top: 10,
+                            left: 10,
+                          ),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1)),
+                          alignment: Alignment.center,
+                          child: _imageUrlContrller.text.isEmpty
+                              ? Text(
+                                  _imageUrlContrller.text.isEmpty ? 'Informe uma URL' : 'Preview da URL',
+                                  textAlign: TextAlign.center,
+                                )
+                              : !isValidImageUrl(_imageUrlContrller.text)
+                                  ? const Text(
+                                      'Informe uma URL valida!',
+                                      textAlign: TextAlign.center,
+                                    )
+                                  : SizedBox(
+                                      height: 100,
+                                      width: 100,
+                                      child: FittedBox(
+                                        fit: BoxFit.cover,
+                                        child: Image.network(_imageUrlContrller.text),
+                                      ),
+                                    ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
