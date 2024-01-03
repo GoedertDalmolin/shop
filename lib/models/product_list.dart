@@ -8,7 +8,6 @@ import 'package:shop/models/product.dart';
 import 'package:shop/utils/firebase_confg.dart';
 
 class ProductList with ChangeNotifier {
-  final _basePathUrl = '/products';
   final _items = <Product>[];
 
   List<Product> get items => [..._items];
@@ -20,7 +19,7 @@ class ProductList with ChangeNotifier {
   }
 
   Future addProduct(Product product) async {
-    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl.json'),
+    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json'),
         body: jsonEncode({
           'name': product.name,
           'description': product.description,
@@ -47,7 +46,7 @@ class ProductList with ChangeNotifier {
     int index = _items.indexWhere((e) => e.id == product.id);
 
     if (index >= 0) {
-      await http.patch(Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl/${product.id}.json'),
+      await http.patch(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.json'),
           body: jsonEncode({
             'name': product.name,
             'description': product.description,
@@ -69,7 +68,7 @@ class ProductList with ChangeNotifier {
       notifyListeners();
 
       final response = await http.delete(
-        Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl/${product.id}.jso1n'),
+        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.jso1n'),
       );
 
       if(response.statusCode >= 400) {
@@ -105,7 +104,7 @@ class ProductList with ChangeNotifier {
   Future loadProducts() async {
     _items.clear();
 
-    final response = await http.get(Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl.json'));
+    final response = await http.get(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json'));
 
     var body = response.body;
 

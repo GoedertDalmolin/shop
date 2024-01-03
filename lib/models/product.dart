@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/exceptions/http_exception.dart';
+import 'package:shop/utils/firebase_confg.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,9 +22,26 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  toggleFavorite() {
+
+  toggleFavorite() async {
     isFavorite = !isFavorite;
     notifyListeners();
+
+    var response = await http.patch(
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/$id.json'),
+      body: jsonEncode(
+        {
+          'isFavorite': isFavorite,
+        },
+      ),
+    );
+
+    if (response.statusCode >= 400) {
+      isFavorite = !isFavorite;
+      notifyListeners();
+
+      throw HttpException(msg: 'Não foi possível favoritar o produto.', statusCode: response.statusCode);
+    }
   }
 
   @override

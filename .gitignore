@@ -46,4 +46,4 @@ app.*.map.json
 
 
 # Arquivo base onde será informado a URL do firebase utilizado.
-**/lib/utils/firebase_confg.dart
+#**/lib/utils/firebase_confg.dart
