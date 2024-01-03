@@ -22,6 +22,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   void initState() {
+    _formData['name'] = '';
+    _formData['description'] = '';
+    _formData['price'] = '';
+    _formData['imageUrl'] = '';
+
     _imageUrlFocus.addListener(updateImage);
 
     super.initState();
@@ -210,10 +215,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             _imageUrlContrller.text.isEmpty ? 'Informe uma URL' : 'Preview da URL',
                             textAlign: TextAlign.center,
                           )
-                        : FittedBox(
-                            fit: BoxFit.cover,
-                            child: Image.network(_imageUrlContrller.text),
-                          ),
+                        : SizedBox(
+                      height: 100,
+                      width: 100,
+                          child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Image.network(_imageUrlContrller.text),
+                            ),
+                        ),
                   ),
                 ],
               ),

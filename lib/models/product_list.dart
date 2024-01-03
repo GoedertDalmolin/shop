@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shop/data/dummy_data.dart';
 import 'package:shop/models/product.dart';
+import 'package:shop/utils/firebase_confg.dart';
 
 class ProductList with ChangeNotifier {
   final _items = dummyProdcts;
@@ -15,7 +18,18 @@ class ProductList with ChangeNotifier {
     return _items.length;
   }
 
-  addProduct(Product product) {
+  addProduct(Product product) async {
+    await http.post(
+      Uri.parse('${FirebaseConfig.urlDatabase}/products.json'),
+      body: jsonEncode({
+        'name': product.name,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+        'isFavorite': product.isFavorite,
+      })
+    );
+
     _items.add(product);
     notifyListeners();
   }
@@ -42,7 +56,7 @@ class ProductList with ChangeNotifier {
   saveProduct({
     required Map<String, Object> data,
   }) {
-    bool hasId = data['id'] != null;
+    bool hasId = data['id'] != null ? (data['id'] as String).isNotEmpty : false;
 
     final product = Product(
       id: hasId ? data['id'] as String : Random().nextDouble().toString(),
@@ -52,10 +66,10 @@ class ProductList with ChangeNotifier {
       imageUrl: data['imageUrl'] as String,
     );
 
-    if (hasId) {
+      if (hasId) {
       updateProduct(product);
     } else {
-      _items.add(product);
+      addProduct(product);
     }
     notifyListeners();
   }
