@@ -63,13 +63,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
       _isLoading = true;
     });
 
-    await Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData).catchError((onError) async {
+    try {
+      await Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData);
+
+      Navigator.pop(context);
+    } catch (e) {
       await showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: const Text('Ocorreu um erro!'),
-              content: Text(onError.toString()),
+              content: Text('Ocorreu um erro para salvar o produto.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -80,13 +84,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
               ],
             );
           });
-    });
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.pop(context);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   bool isValidImageUrl(String url) {
