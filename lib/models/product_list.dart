@@ -29,6 +29,16 @@ class ProductList with ChangeNotifier {
     }
   }
 
+  removeProduct(Product product) {
+    int index = _items.indexWhere((e) => e.id == product.id);
+
+    if (index >= 0) {
+      _items.removeAt(index);
+
+      notifyListeners();
+    }
+  }
+
   saveProduct({
     required Map<String, Object> data,
   }) {
