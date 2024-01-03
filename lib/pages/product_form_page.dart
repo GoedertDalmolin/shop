@@ -68,14 +68,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Ocorreu um erro!'),
+              title: const Text('Ocorreu um erro!'),
               content: Text(onError.toString()),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Ok'),
+                  child: const Text('Ok'),
                 )
               ],
             );
