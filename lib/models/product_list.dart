@@ -7,7 +7,7 @@ import 'package:shop/models/product.dart';
 import 'package:shop/utils/firebase_confg.dart';
 
 class ProductList with ChangeNotifier {
-  final _basePathUrl = '/products.json';
+  final _basePathUrl = '/products';
   final _items = <Product>[];
 
   List<Product> get items => [..._items];
@@ -19,7 +19,7 @@ class ProductList with ChangeNotifier {
   }
 
   Future addProduct(Product product) async {
-    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}/products.json'),
+    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl.json'),
         body: jsonEncode({
           'name': product.name,
           'description': product.description,
@@ -42,10 +42,18 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  updateProduct(Product product) {
+  updateProduct(Product product) async {
     int index = _items.indexWhere((e) => e.id == product.id);
 
     if (index >= 0) {
+      await http.patch(Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl/${product.id}.json'),
+          body: jsonEncode({
+            'name': product.name,
+            'description': product.description,
+            'price': product.price,
+            'imageUrl': product.imageUrl,
+          }));
+
       _items[index] = product;
       notifyListeners();
     }
@@ -75,7 +83,7 @@ class ProductList with ChangeNotifier {
     );
 
     if (hasId) {
-      updateProduct(product);
+      await updateProduct(product);
     } else {
       await addProduct(product);
     }
@@ -85,7 +93,7 @@ class ProductList with ChangeNotifier {
   Future loadProducts() async {
     _items.clear();
 
-    final response = await http.get(Uri.parse(FirebaseConfig.urlDatabase + _basePathUrl));
+    final response = await http.get(Uri.parse('${FirebaseConfig.urlDatabase}$_basePathUrl.json'));
 
     var body = response.body;
 

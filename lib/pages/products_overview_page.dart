@@ -79,7 +79,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
       ),
       drawer: const AppDrawer(),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : ProductGrid(

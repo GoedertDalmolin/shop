@@ -66,24 +66,28 @@ class _ProductFormPageState extends State<ProductFormPage> {
     try {
       await Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData);
 
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } catch (e) {
-      await showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Ocorreu um erro!'),
-              content: Text('Ocorreu um erro para salvar o produto.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Ok'),
-                )
-              ],
-            );
-          });
+      if (mounted) {
+        await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Ocorreu um erro!'),
+                content: const Text('Ocorreu um erro para salvar o produto.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Ok'),
+                  )
+                ],
+              );
+            });
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -101,19 +105,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   void didChangeDependencies() {
-    if (_formData.isEmpty) {
-      var arg = ModalRoute.of(context)?.settings.arguments;
+    var arg = ModalRoute.of(context)?.settings.arguments;
 
-      if (arg != null) {
-        final product = arg as Product;
-        _formData['id'] = product.id;
-        _formData['name'] = product.name;
-        _formData['description'] = product.description;
-        _formData['price'] = product.price;
-        _formData['imageUrl'] = product.imageUrl;
+    if (arg != null) {
+      final product = arg as Product;
+      _formData['id'] = product.id;
+      _formData['name'] = product.name;
+      _formData['description'] = product.description;
+      _formData['price'] = product.price;
+      _formData['imageUrl'] = product.imageUrl;
 
-        _imageUrlContrller.text = _formData['imageUrl'] as String;
-      }
+      _imageUrlContrller.text = _formData['imageUrl'] as String;
     }
 
     super.didChangeDependencies();
