@@ -20,6 +20,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   final _formData = <String, Object>{};
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     _formData['name'] = '';
@@ -42,11 +44,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
     super.dispose();
   }
 
-  updateImage() {
-    setState(() {});
+  updateImage()  {
+    if (isValidImageUrl(_imageUrlContrller.text)) {
+      setState(() {});
+    }
   }
 
-  onSubmitForm() {
+  onSubmitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
@@ -55,7 +59,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     _formKey.currentState?.save();
 
-    Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData);
+    setState(() {
+      _isLoading = true;
+    });
+
+    await Provider.of<ProductList>(context, listen: false).saveProduct(data: _formData);
+
+    setState(() {
+      _isLoading = false;
+    });
 
     Navigator.pop(context);
   }
@@ -100,7 +112,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
           )
         ],
       ),
-      body: Padding(
+      body: _isLoading ? Center(
+        child: CircularProgressIndicator(),
+      ) : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -215,14 +229,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
                             _imageUrlContrller.text.isEmpty ? 'Informe uma URL' : 'Preview da URL',
                             textAlign: TextAlign.center,
                           )
-                        : SizedBox(
-                      height: 100,
-                      width: 100,
-                          child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: Image.network(_imageUrlContrller.text),
-                            ),
-                        ),
+                        : !isValidImageUrl(_imageUrlContrller.text)
+                            ? const Text(
+                                'Informe uma URL valida!',
+                                textAlign: TextAlign.center,
+                              )
+                            : SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: Image.network(_imageUrlContrller.text),
+                                ),
+                              ),
                   ),
                 ],
               ),

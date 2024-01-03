@@ -18,19 +18,27 @@ class ProductList with ChangeNotifier {
     return _items.length;
   }
 
-  addProduct(Product product) async {
-    await http.post(
-      Uri.parse('${FirebaseConfig.urlDatabase}/products.json'),
-      body: jsonEncode({
-        'name': product.name,
-        'description': product.description,
-        'price': product.price,
-        'imageUrl': product.imageUrl,
-        'isFavorite': product.isFavorite,
-      })
+ Future addProduct(Product product) async {
+    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}/products.json'),
+        body: jsonEncode({
+          'name': product.name,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+          'isFavorite': product.isFavorite,
+        }));
+
+    final id = jsonDecode(response.body)['name'];
+
+    final productWithId = Product(
+      id: id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
     );
 
-    _items.add(product);
+    _items.add(productWithId);
     notifyListeners();
   }
 
@@ -53,9 +61,9 @@ class ProductList with ChangeNotifier {
     }
   }
 
-  saveProduct({
+  Future saveProduct({
     required Map<String, Object> data,
-  }) {
+  }) async {
     bool hasId = data['id'] != null ? (data['id'] as String).isNotEmpty : false;
 
     final product = Product(
@@ -66,10 +74,10 @@ class ProductList with ChangeNotifier {
       imageUrl: data['imageUrl'] as String,
     );
 
-      if (hasId) {
+    if (hasId) {
       updateProduct(product);
     } else {
-      addProduct(product);
+      await addProduct(product);
     }
     notifyListeners();
   }
