@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:shop/models/cart.dart';
+import 'package:shop/models/cart_item.dart';
 import 'package:shop/models/order.dart';
 
 import 'package:http/http.dart' as http;
@@ -27,13 +27,15 @@ class OrderList with ChangeNotifier {
       body: jsonEncode({
         'total': cart.totalAmount,
         'date': date.toIso8601String(),
-        'products': cart.items.values.map((e) => {
-              'id': e.id,
-              'productId': e.productId,
-              'productName': e.productName,
-              'quantity': e.quantity,
-              'price': e.price,
-            }).toList(),
+        'products': cart.items.values
+            .map((e) => {
+                  'id': e.id,
+                  'productId': e.productId,
+                  'productName': e.productName,
+                  'quantity': e.quantity,
+                  'price': e.price,
+                })
+            .toList(),
       }),
     );
 
@@ -50,5 +52,38 @@ class OrderList with ChangeNotifier {
     );
 
     notifyListeners();
+  }
+
+  Future loadOrders() async {
+    _items.clear();
+
+    final response = await http.get(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json'));
+
+    var body = response.body;
+
+    if (body.isNotEmpty && body != 'null') {
+      Map<String, dynamic> data = jsonDecode(body);
+
+      try {
+        data.forEach((orderId, orderData) {
+          _items.add(Order(
+            id: orderId,
+            total: orderData['total'],
+            date: DateTime.parse(orderData['date']),
+            products: (orderData['products'] as List<dynamic>).map((product) {
+              return CartItem(
+                  id: product['id'],
+                  productId: product['productId'],
+                  productName: product['productName'],
+                  quantity: product['quantity'],
+                  price: product['price']);
+            }).toList(),
+          ));
+        });
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+      notifyListeners();
+    }
   }
 }
