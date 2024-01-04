@@ -56,8 +56,6 @@ class _OrdersPageState extends State<OrdersPage> {
                 },
               );
             }
-
-            return Container();
           },
         )
 
