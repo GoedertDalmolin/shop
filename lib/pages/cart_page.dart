@@ -47,8 +47,8 @@ class CartPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {
-                    Provider.of<OrderList>(context, listen: false).addOrder(cart);
+                  onPressed: () async {
+                    await Provider.of<OrderList>(context, listen: false).addOrder(cart);
 
                     cart.clear();
                   },

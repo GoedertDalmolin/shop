@@ -63,7 +63,6 @@ class ProductList with ChangeNotifier {
     int index = _items.indexWhere((e) => e.id == product.id);
 
     if (index >= 0) {
-
       _items.removeAt(index);
       notifyListeners();
 
@@ -71,7 +70,7 @@ class ProductList with ChangeNotifier {
         Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.jso1n'),
       );
 
-      if(response.statusCode >= 400) {
+      if (response.statusCode >= 400) {
         _items.insert(index, product);
         notifyListeners();
 
@@ -111,18 +110,21 @@ class ProductList with ChangeNotifier {
     if (body.isNotEmpty && body != 'null') {
       Map<String, dynamic> data = jsonDecode(body);
 
-      data.forEach((productId, productData) {
-        _items.add(
-          Product(
-              id: productId,
-              name: productData['name'],
-              description: productData['description'],
-              price: productData['price'],
-              imageUrl: productData['imageUrl'],
-              isFavorite: productData['isFavorite']),
-        );
-      });
-
+      try {
+        data.forEach((productId, productData) {
+          _items.add(
+            Product(
+                id: productId,
+                name: productData['name'],
+                description: productData['description'],
+                price: productData['price'],
+                imageUrl: productData['imageUrl'],
+                isFavorite: productData['isFavorite']),
+          );
+        });
+      } catch (e) {
+        debugPrint(e.toString());
+      }
       notifyListeners();
     }
   }
