@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/models/auth.dart';
 
 enum AuthMode {
   singUp,
@@ -29,7 +31,7 @@ class _AuthFormState extends State<AuthForm> {
 
   bool _isSigup() => _authMode == AuthMode.singUp;
 
-  _submit() {
+  _submit() async {
     bool isValidForm = _form.currentState?.validate() ?? false;
 
     if (!isValidForm) {
@@ -42,10 +44,22 @@ class _AuthFormState extends State<AuthForm> {
 
     _form.currentState?.save();
 
-    if(_isLogin()) {
+    try {
+      var auth = Provider.of<Auth>(context, listen: false);
 
-    } else {
-
+      if (_isLogin()) {
+        await auth.login(
+          email: _authData['email']!,
+          password: _authData['password']!,
+        );
+      } else {
+        await auth.signup(
+          email: _authData['email']!,
+          password: _authData['password']!,
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
 
     setState(() {
