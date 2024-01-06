@@ -12,23 +12,8 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage> {
-  // bool _isLoading = true;
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   Provider.of<OrderList>(context, listen: false).loadOrders().then((value) {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // final OrderList orders = Provider.of(context);
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('Meus Pedidos'),
@@ -57,17 +42,6 @@ class _OrdersPageState extends State<OrdersPage> {
               );
             }
           },
-        )
-
-        // _isLoading
-        //     ? const Center(
-        //         child: CircularProgressIndicator(),
-        //       )
-        //     : ListView.builder(
-        //         itemCount: orders.itemsCount,
-        //         itemBuilder: (ctx, index) {
-        //           return OrderWidget(order: orders.items[index]);
-        //         }),
-        );
+        ));
   }
 }
