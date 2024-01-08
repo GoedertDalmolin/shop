@@ -6,7 +6,28 @@ import 'package:shop/utils/firebase_confg.dart';
 import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
-  // https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]
+  String? _token;
+  String? _email;
+  String? _uid;
+  DateTime? _expiryDate;
+
+  bool get isAuth {
+    final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
+
+    return _token != null && isValid;
+  }
+
+  String? get token {
+    return isAuth ? _token : null;
+  }
+
+  String? get email {
+    return isAuth ? _email : null;
+  }
+
+  String? get uid {
+    return isAuth ? _uid : null;
+  }
 
   Future _authenticate({
     required String email,
@@ -28,9 +49,18 @@ class Auth with ChangeNotifier {
 
     if (body['error'] != null) {
       throw AuthException(key: body['error']['message']);
-    }
+    } else {
+      _token = body['idToken'];
+      _email = body['email'];
+      _uid = body['localId'];
 
-    debugPrint(body.toString());
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(body['expiresIn']),
+        ),
+      );
+      notifyListeners();
+    }
   }
 
   Future signup({required String email, required String password}) async {
