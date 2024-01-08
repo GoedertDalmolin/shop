@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/exceptions/auth_exception.dart';
 import 'package:shop/models/auth.dart';
 
 enum AuthMode {
@@ -58,13 +59,34 @@ class _AuthFormState extends State<AuthForm> {
           password: _authData['password']!,
         );
       }
+    } on AuthException catch (e) {
+      _showErrorDialog(e.toString());
     } catch (e) {
-      debugPrint(e.toString());
+      _showErrorDialog('Ocorreu um erro inesperado!');
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: const Text('Ocorreu um Erro'),
+            content: Text(msg),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Fechar'),
+              )
+            ],
+          );
+        });
   }
 
   _switchAuthMode() {
