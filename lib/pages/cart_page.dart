@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/components/cart_item.dart';
+import 'package:shop/models/auth.dart';
 import 'package:shop/models/cart.dart';
 import 'package:shop/models/order_list.dart';
 
@@ -82,23 +83,30 @@ class _CartButtonState extends State<CartButton> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? const CircularProgressIndicator() : TextButton(
-      onPressed: widget.cart.itemsCount == 0
-          ? null
-          : () async {
-              setState(() {
-                _isLoading = true;
-              });
-              await Provider.of<OrderList>(context, listen: false).addOrder(widget.cart);
+    final auth = Provider.of<Auth>(context);
+    return _isLoading
+        ? const CircularProgressIndicator()
+        : TextButton(
+            onPressed: widget.cart.itemsCount == 0
+                ? null
+                : () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
 
-              widget.cart.clear();
+                    await Provider.of<OrderList>(context, listen: false).addOrder(
+                      cart: widget.cart,
+                      userId: auth.userId ?? '',
+                    );
 
-              setState(() {
-                _isLoading = false;
-              });
-            },
-      style: TextButton.styleFrom(textStyle: TextStyle(color: Theme.of(context).primaryColor)),
-      child: const Text('COMPRAR'),
-    );
+                    widget.cart.clear();
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+            style: TextButton.styleFrom(textStyle: TextStyle(color: Theme.of(context).primaryColor)),
+            child: const Text('COMPRAR'),
+          );
   }
 }

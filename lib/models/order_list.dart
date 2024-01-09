@@ -23,11 +23,11 @@ class OrderList with ChangeNotifier {
     return orderItems.length;
   }
 
-  addOrder(Cart cart) async {
+  addOrder({required Cart cart, required String userId}) async {
     final date = DateTime.now();
 
     var response = await http.post(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.orderRoute}.json?auth=$token'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.orderRoute}/$userId.json?auth=$token'),
       body: jsonEncode({
         'total': cart.totalAmount,
         'date': date.toIso8601String(),
@@ -58,11 +58,11 @@ class OrderList with ChangeNotifier {
     notifyListeners();
   }
 
-  Future loadOrders() async {
+  Future loadOrders({required String userId}) async {
     orderItems.clear();
 
     final response = await http.get(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.orderRoute}.json?auth=$token'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.orderRoute}/$userId.json?auth=$token'),
     );
 
     var body = response.body;

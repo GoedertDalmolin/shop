@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/components/app_drawer.dart';
 import 'package:shop/components/order.dart';
+import 'package:shop/models/auth.dart';
 import 'package:shop/models/order_list.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -12,15 +13,18 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage> {
+
+
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Meus Pedidos'),
         ),
         drawer: const AppDrawer(),
         body: FutureBuilder(
-          future: Provider.of<OrderList>(context, listen: false).loadOrders(),
+          future: Provider.of<OrderList>(context, listen: false).loadOrders(userId: auth.userId ?? ''),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
