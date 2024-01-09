@@ -5,31 +5,34 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/models/product.dart';
-import 'package:shop/utils/firebase_confg.dart';
+import 'package:shop/utils/firebase_config.dart';
+import 'package:shop/utils/firebase_routes.dart';
 
 class ProductList with ChangeNotifier {
-  String _token;
-  var _items = <Product>[];
+  final String token;
+  final String userId;
+  final List<Product> productItems;
 
-  ProductList(this._token, this._items);
+  ProductList({this.token = '', this.userId = '', this.productItems = const []});
 
-  List<Product> get items => [..._items];
+  List<Product> get items => [...productItems];
 
-  List<Product> get favoriteItems => _items.where((element) => element.isFavorite).toList();
+  List<Product> get favoriteItems => productItems.where((element) => element.isFavorite).toList();
 
   int get itemsCount {
-    return _items.length;
+    return productItems.length;
   }
 
   Future addProduct(Product product) async {
-    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json?auth=$_token'),
-        body: jsonEncode({
-          'name': product.name,
-          'description': product.description,
-          'price': product.price,
-          'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
-        }));
+    var response = await http.post(
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.productRoute}.json?auth=$token'),
+      body: jsonEncode({
+        'name': product.name,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+      }),
+    );
 
     final id = jsonDecode(response.body)['name'];
 
@@ -41,42 +44,44 @@ class ProductList with ChangeNotifier {
       imageUrl: product.imageUrl,
     );
 
-    _items.add(productWithId);
+    items.add(productWithId);
     notifyListeners();
   }
 
   updateProduct(Product product) async {
-    int index = _items.indexWhere((e) => e.id == product.id);
+    int index = items.indexWhere((e) => e.id == product.id);
 
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.json?auth=$_token'),
-        body: jsonEncode({
-          'name': product.name,
-          'description': product.description,
-          'price': product.price,
-          'imageUrl': product.imageUrl,
-        },),
+        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.productRoute}/${product.id}.json?auth=$token'),
+        body: jsonEncode(
+          {
+            'name': product.name,
+            'description': product.description,
+            'price': product.price,
+            'imageUrl': product.imageUrl,
+          },
+        ),
       );
 
-      _items[index] = product;
+      productItems[index] = product;
       notifyListeners();
     }
   }
 
   Future removeProduct(Product product) async {
-    int index = _items.indexWhere((e) => e.id == product.id);
+    int index = productItems.indexWhere((e) => e.id == product.id);
 
     if (index >= 0) {
-      _items.removeAt(index);
+      productItems.removeAt(index);
       notifyListeners();
 
       final response = await http.delete(
-        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.json?auth=$_token'),
+        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.productRoute}/${product.id}.json?auth=$token'),
       );
 
       if (response.statusCode >= 400) {
-        _items.insert(index, product);
+        productItems.insert(index, product);
         notifyListeners();
 
         throw HttpException(msg: 'Não foi possível excluir o produto.', statusCode: response.statusCode);
@@ -106,11 +111,21 @@ class ProductList with ChangeNotifier {
   }
 
   Future loadProducts() async {
-    _items.clear();
+    productItems.clear();
 
     final response = await http.get(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json?auth=$_token'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.productRoute}.json?auth=$token'),
     );
+
+    if (response.body == 'null') {
+      return;
+    }
+
+    var favResponse = await http.get(
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.userFavoritesRoute}/$userId.json?auth=$token'),
+    );
+
+    Map<String, dynamic> favData = favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
 
     var body = response.body;
 
@@ -119,14 +134,17 @@ class ProductList with ChangeNotifier {
 
       try {
         data.forEach((productId, productData) {
-          _items.add(
+          var isFavorite = favData[productId] ?? false;
+
+          productItems.add(
             Product(
-                id: productId,
-                name: productData['name'],
-                description: productData['description'],
-                price: productData['price'],
-                imageUrl: productData['imageUrl'],
-                isFavorite: productData['isFavorite']),
+              id: productId,
+              name: productData['name'],
+              description: productData['description'],
+              price: productData['price'],
+              imageUrl: productData['imageUrl'],
+              isFavorite: isFavorite,
+            ),
           );
         });
       } catch (e) {

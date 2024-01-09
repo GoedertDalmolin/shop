@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/exceptions/http_exception.dart';
-import 'package:shop/utils/firebase_confg.dart';
+import 'package:shop/utils/firebase_config.dart';
+import 'package:shop/utils/firebase_routes.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -22,18 +23,13 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-
-  toggleFavorite({required String token}) async {
+  toggleFavorite({required String token, required String userId}) async {
     isFavorite = !isFavorite;
     notifyListeners();
 
-    var response = await http.patch(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/$id.json?auth=$token'),
-      body: jsonEncode(
-        {
-          'isFavorite': isFavorite,
-        },
-      ),
+    var response = await http.put(
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.userFavoritesRoute}/$userId/$id.json?auth=$token'),
+      body: jsonEncode(isFavorite),
     );
 
     if (response.statusCode >= 400) {

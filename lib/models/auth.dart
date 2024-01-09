@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:shop/exceptions/auth_exception.dart';
-import 'package:shop/utils/firebase_confg.dart';
+import 'package:shop/utils/firebase_config.dart';
 import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
@@ -25,7 +25,7 @@ class Auth with ChangeNotifier {
     return isAuth ? _email : null;
   }
 
-  String? get uid {
+  String? get userId {
     return isAuth ? _uid : null;
   }
 

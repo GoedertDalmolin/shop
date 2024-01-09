@@ -31,7 +31,7 @@ class ProductGridItem extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  await product.toggleFavorite(token: auth.token ?? '');
+                  await product.toggleFavorite(token: auth.token ?? '', userId: auth.userId ?? '');
                 } on HttpException catch (e) {
                   debugPrint(e.toString());
                   msg.showSnackBar(SnackBar(content: Text(e.msg)));

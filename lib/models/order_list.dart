@@ -6,27 +6,28 @@ import 'package:shop/models/cart_item.dart';
 import 'package:shop/models/order.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:shop/utils/firebase_confg.dart';
+import 'package:shop/utils/firebase_config.dart';
+import 'package:shop/utils/firebase_routes.dart';
 
 class OrderList with ChangeNotifier {
-  String _token;
-  var _items = <Order>[];
+  final String token;
+  List<Order> orderItems;
 
-  OrderList(this._token, this._items);
+  OrderList({this.token = '', this.orderItems = const []});
 
   List<Order> get items {
-    return [..._items];
+    return [...orderItems];
   }
 
   int get itemsCount {
-    return _items.length;
+    return orderItems.length;
   }
 
   addOrder(Cart cart) async {
     final date = DateTime.now();
 
     var response = await http.post(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json?auth=$_token'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.orderRoute}.json?auth=$token'),
       body: jsonEncode({
         'total': cart.totalAmount,
         'date': date.toIso8601String(),
@@ -44,7 +45,7 @@ class OrderList with ChangeNotifier {
 
     final id = jsonDecode(response.body)['name'];
 
-    _items.insert(
+    orderItems.insert(
       0,
       Order(
         id: id,
@@ -58,10 +59,10 @@ class OrderList with ChangeNotifier {
   }
 
   Future loadOrders() async {
-    _items.clear();
+    orderItems.clear();
 
     final response = await http.get(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json?auth=$_token'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseRoutes.orderRoute}.json?auth=$token'),
     );
 
     var body = response.body;
@@ -71,7 +72,7 @@ class OrderList with ChangeNotifier {
 
       try {
         data.forEach((orderId, orderData) {
-          _items.add(Order(
+          orderItems.add(Order(
             id: orderId,
             total: orderData['total'],
             date: DateTime.parse(orderData['date']),
@@ -89,7 +90,7 @@ class OrderList with ChangeNotifier {
         debugPrint(e.toString());
       }
 
-      _items = items.reversed.toList();
+      orderItems = items.reversed.toList();
       notifyListeners();
     }
   }
