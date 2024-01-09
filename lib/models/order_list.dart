@@ -9,7 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:shop/utils/firebase_confg.dart';
 
 class OrderList with ChangeNotifier {
-  final List<Order> _items = [];
+  String _token;
+  var _items = <Order>[];
+
+  OrderList(this._token, this._items);
 
   List<Order> get items {
     return [..._items];
@@ -23,7 +26,7 @@ class OrderList with ChangeNotifier {
     final date = DateTime.now();
 
     var response = await http.post(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json?auth=$_token'),
       body: jsonEncode({
         'total': cart.totalAmount,
         'date': date.toIso8601String(),
@@ -57,7 +60,9 @@ class OrderList with ChangeNotifier {
   Future loadOrders() async {
     _items.clear();
 
-    final response = await http.get(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json'));
+    final response = await http.get(
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.orderRoute}.json?auth=$_token'),
+    );
 
     var body = response.body;
 
@@ -83,6 +88,8 @@ class OrderList with ChangeNotifier {
       } catch (e) {
         debugPrint(e.toString());
       }
+
+      _items = items.reversed.toList();
       notifyListeners();
     }
   }

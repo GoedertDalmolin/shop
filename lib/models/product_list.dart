@@ -8,7 +8,10 @@ import 'package:shop/models/product.dart';
 import 'package:shop/utils/firebase_confg.dart';
 
 class ProductList with ChangeNotifier {
-  final _items = <Product>[];
+  String _token;
+  var _items = <Product>[];
+
+  ProductList(this._token, this._items);
 
   List<Product> get items => [..._items];
 
@@ -19,7 +22,7 @@ class ProductList with ChangeNotifier {
   }
 
   Future addProduct(Product product) async {
-    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json'),
+    var response = await http.post(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json?auth=$_token'),
         body: jsonEncode({
           'name': product.name,
           'description': product.description,
@@ -46,13 +49,15 @@ class ProductList with ChangeNotifier {
     int index = _items.indexWhere((e) => e.id == product.id);
 
     if (index >= 0) {
-      await http.patch(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.json'),
-          body: jsonEncode({
-            'name': product.name,
-            'description': product.description,
-            'price': product.price,
-            'imageUrl': product.imageUrl,
-          }));
+      await http.patch(
+        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.json?auth=$_token'),
+        body: jsonEncode({
+          'name': product.name,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+        },),
+      );
 
       _items[index] = product;
       notifyListeners();
@@ -67,7 +72,7 @@ class ProductList with ChangeNotifier {
       notifyListeners();
 
       final response = await http.delete(
-        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.jso1n'),
+        Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/${product.id}.json?auth=$_token'),
       );
 
       if (response.statusCode >= 400) {
@@ -103,7 +108,9 @@ class ProductList with ChangeNotifier {
   Future loadProducts() async {
     _items.clear();
 
-    final response = await http.get(Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json'));
+    final response = await http.get(
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}.json?auth=$_token'),
+    );
 
     var body = response.body;
 

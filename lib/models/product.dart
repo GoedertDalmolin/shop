@@ -23,12 +23,12 @@ class Product with ChangeNotifier {
   });
 
 
-  toggleFavorite() async {
+  toggleFavorite({required String token}) async {
     isFavorite = !isFavorite;
     notifyListeners();
 
     var response = await http.patch(
-      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/$id.json'),
+      Uri.parse('${FirebaseConfig.urlDatabase}${FirebaseConfig.productRoute}/$id.json?auth=$token'),
       body: jsonEncode(
         {
           'isFavorite': isFavorite,
