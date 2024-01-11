@@ -70,4 +70,13 @@ class Auth with ChangeNotifier {
   Future login({required String email, required String password}) async {
     return await _authenticate(email: email, password: password, urlFragment: 'signInWithPassword');
   }
+
+  logout() {
+    _token = null;
+    _email = null;
+    _uid = null;
+    _expiryDate = null;
+
+    notifyListeners();
+  }
 }
