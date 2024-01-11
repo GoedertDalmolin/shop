@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:shop/data/store.dart';
 import 'package:shop/exceptions/auth_exception.dart';
 import 'package:shop/utils/firebase_config.dart';
 import 'package:http/http.dart' as http;
@@ -62,9 +63,42 @@ class Auth with ChangeNotifier {
         ),
       );
 
+      await Store.saveMap('userData', {
+        'token': _token,
+        'email': _email,
+        'userId': userId,
+        'expiryDate': _expiryDate!.toIso8601String(),
+      });
+
       _autoLogout();
       notifyListeners();
     }
+  }
+
+  Future tryAutoLogin() async {
+    if (isAuth) {
+      return;
+    }
+
+    final userData = await Store.getMap('userData');
+
+    if (userData.isEmpty) {
+      return;
+    }
+
+    final expiryDate = DateTime.parse(userData['expiryDate']);
+
+    if (expiryDate.isBefore(DateTime.now())) {
+      return;
+    }
+
+    _token = userData['token'];
+    _email = userData['email'];
+    _uid = userData['userId'];
+    _expiryDate = expiryDate;
+
+    _autoLogout();
+    notifyListeners();
   }
 
   Future signup({required String email, required String password}) async {
