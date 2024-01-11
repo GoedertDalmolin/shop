@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,7 @@ class Auth with ChangeNotifier {
   String? _email;
   String? _uid;
   DateTime? _expiryDate;
+  Timer? logoutTimer;
 
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
@@ -59,6 +61,8 @@ class Auth with ChangeNotifier {
           seconds: int.parse(body['expiresIn']),
         ),
       );
+
+      _autoLogout();
       notifyListeners();
     }
   }
@@ -76,7 +80,20 @@ class Auth with ChangeNotifier {
     _email = null;
     _uid = null;
     _expiryDate = null;
+    _clearAutoLogout();
 
     notifyListeners();
+  }
+
+  _clearAutoLogout() {
+    logoutTimer?.cancel();
+    logoutTimer = null;
+  }
+
+  _autoLogout() {
+    _clearAutoLogout();
+    final timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
+
+    logoutTimer = Timer(Duration(seconds: timeToLogout ?? 0), logout);
   }
 }
