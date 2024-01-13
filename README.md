@@ -1,16 +1,28 @@
-# shop
+---
 
-A new Flutter project.
+## Shop App
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## ℹ️ About this repository (IN PROGRESS)
+This repository's main objective is to demonstrate the application developed to train my knowledge during the Flutter course from the company [COD3R](https://www.udemy.com/course/curso-flutter/).
 
-A few resources to get you started if this is your first Flutter project:
+This app consists of:
+- Manage products (CRUD, Create, Read, Update and Delete).
+- Manage orders.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🧪 Technologies
+This project was developed using the following technologies:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Flutter (v3.16.2)](https://docs.flutter.dev/)
+- [Dart (v3.2.2)](https://dart.dev/)
+- [Intl](https://pub.dev/packages/intl)
+- [Google_Fonts](https://pub.dev/packages/google_fonts)
+- [Font Awesome Flutter](https://pub.dev/packages/font_awesome_flutter)
+- [Http](https://pub.dev/packages/http)
+- [Provider](https://pub.dev/packages/provider)
+- [Shared Preferences](https://pub.dev/packages/shared_preferences)
+
+---
+</> Developed by [GoedertDalmolin](https://github.com/GoedertDalmolin) 👋
+---
