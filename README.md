@@ -1,10 +1,10 @@
 ---
 
-## Shop App
+## Shop App (IN PROGRESS)
 
 ---
 
-## ℹ️ About this repository (IN PROGRESS)
+## ℹ️ About this repository 
 This repository's main objective is to demonstrate the application developed to train my knowledge during the Flutter course from the company [COD3R](https://www.udemy.com/course/curso-flutter/).
 
 This app consists of:
