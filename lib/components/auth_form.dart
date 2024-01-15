@@ -15,7 +15,7 @@ class AuthForm extends StatefulWidget {
   State<AuthForm> createState() => _AuthFormState();
 }
 
-class _AuthFormState extends State<AuthForm> {
+class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin {
   final _passwordController = TextEditingController();
   var _authMode = AuthMode.login;
 
@@ -31,6 +31,39 @@ class _AuthFormState extends State<AuthForm> {
   bool _isLogin() => _authMode == AuthMode.login;
 
   bool _isSigup() => _authMode == AuthMode.singUp;
+
+  AnimationController? _controller;
+  Animation<Size>? _heightAnimation;
+
+  @override
+  initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+
+    _heightAnimation = Tween(
+      begin: const Size(double.infinity, 310),
+      end: const Size(double.infinity, 400),
+    ).animate(
+      CurvedAnimation(parent: _controller!, curve: Curves.linear)
+    );
+
+    _heightAnimation?.addListener(() {
+      setState(() {
+
+      });
+    });
+
+    super.initState();
+  }
+
+
+  @override
+  dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   _submit() async {
     bool isValidForm = _form.currentState?.validate() ?? false;
@@ -93,8 +126,10 @@ class _AuthFormState extends State<AuthForm> {
     setState(() {
       if (_isLogin()) {
         _authMode = AuthMode.singUp;
+        _controller?.forward();
       } else if (_isSigup()) {
         _authMode = AuthMode.login;
+        _controller?.reverse();
       }
     });
   }
@@ -109,7 +144,8 @@ class _AuthFormState extends State<AuthForm> {
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
-        height: deviceSize.height * 0.50,
+        //height: deviceSize.height * 0.50,
+        height: _heightAnimation?.value.height ?? (_isLogin() ? 310: 500),
         width: deviceSize.width * 0.75,
         child: Form(
           key: _form,
