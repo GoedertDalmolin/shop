@@ -73,9 +73,12 @@ class ProductGridItem extends StatelessWidget {
               arguments: productPV,
             );
           },
-          child: Image.network(
-            productPV.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: productPV.id,
+            child: Image.network(
+              productPV.imageUrl,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
