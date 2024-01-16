@@ -45,19 +45,14 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
     _heightAnimation = Tween(
       begin: const Size(double.infinity, 310),
       end: const Size(double.infinity, 400),
-    ).animate(
-      CurvedAnimation(parent: _controller!, curve: Curves.linear)
-    );
+    ).animate(CurvedAnimation(parent: _controller!, curve: Curves.linear));
 
-    _heightAnimation?.addListener(() {
-      setState(() {
-
-      });
-    });
+    // _heightAnimation?.addListener(() {
+    //   setState(() {});
+    // });
 
     super.initState();
   }
-
 
   @override
   dispose() {
@@ -142,11 +137,8 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        //height: deviceSize.height * 0.50,
-        height: _heightAnimation?.value.height ?? (_isLogin() ? 310: 500),
-        width: deviceSize.width * 0.75,
+      child: AnimatedBuilder(
+        animation: _heightAnimation!,
         child: Form(
           key: _form,
           child: Column(
@@ -229,6 +221,15 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
             ],
           ),
         ),
+        builder: (ctx, child) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            //height: deviceSize.height * 0.50,
+            height: _heightAnimation?.value.height ?? (_isLogin() ? 310 : 500),
+            width: deviceSize.width * 0.75,
+            child: child,
+          );
+        },
       ),
     );
   }
