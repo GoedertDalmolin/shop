@@ -37,7 +37,7 @@ class _OrderWidgetState extends State<OrderWidget> {
                   },
                 ),
               ),
-              // if (_expanded)
+              if (_expanded)
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   height: _expanded ? itemsHeight : 0 ,
