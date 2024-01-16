@@ -35,6 +35,9 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
   AnimationController? _controller;
   Animation<Size>? _heightAnimation;
 
+  Animation<double>? _opacityAnimation;
+  Animation<Offset>? _slideAnimation;
+
   @override
   initState() {
     _controller = AnimationController(
@@ -43,13 +46,25 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
     );
 
     _heightAnimation = Tween(
-      begin: const Size(double.infinity, 310),
+      begin: const Size(double.infinity, 340),
       end: const Size(double.infinity, 400),
-    ).animate(CurvedAnimation(parent: _controller!, curve: Curves.linear));
+    ).animate(
+      CurvedAnimation(parent: _controller!, curve: Curves.linear),
+    );
 
-    // _heightAnimation?.addListener(() {
-    //   setState(() {});
-    // });
+    _opacityAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(parent: _controller!, curve: Curves.linear),
+    );
+
+    _slideAnimation = Tween(
+      begin: const Offset(0, -1.5),
+      end: const Offset(0, 0),
+    ).animate(
+      CurvedAnimation(parent: _controller!, curve: Curves.linear),
+    );
 
     super.initState();
   }
@@ -57,6 +72,7 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
   @override
   dispose() {
     _controller?.dispose();
+
     super.dispose();
   }
 
@@ -141,84 +157,120 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
         animation: _heightAnimation!,
         child: Form(
           key: _form,
-          child: Column(
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'E-mail'),
-                keyboardType: TextInputType.emailAddress,
-                onSaved: (email) => _authData['email'] = (email ?? ''),
-                validator: (email) {
-                  final inputEmail = email ?? '';
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        decoration: const InputDecoration(labelText: 'E-mail'),
+                        keyboardType: TextInputType.emailAddress,
+                        onSaved: (email) => _authData['email'] = (email ?? ''),
+                        validator: (email) {
+                          final inputEmail = email ?? '';
 
-                  if (inputEmail.length < 5) {
-                    return 'O email informado deve ser maior que 4 caracteres!';
-                  }
+                          if (inputEmail.length < 5) {
+                            return 'O email informado deve ser maior que 4 caracteres!';
+                          }
 
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Senha'),
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                onSaved: (password) => _authData['password'] = (password ?? ''),
-                controller: _passwordController,
-                validator: (password) {
-                  final inputPassword = password ?? '';
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        decoration: const InputDecoration(labelText: 'Senha'),
+                        keyboardType: TextInputType.emailAddress,
+                        obscureText: true,
+                        onSaved: (password) => _authData['password'] = (password ?? ''),
+                        controller: _passwordController,
+                        validator: (password) {
+                          final inputPassword = password ?? '';
 
-                  if (inputPassword.length < 5) {
-                    return 'A senha informada deve ser maior que 4 caracteres!';
-                  }
+                          if (inputPassword.length < 5) {
+                            return 'A senha informada deve ser maior que 4 caracteres!';
+                          }
 
-                  return null;
-                },
-              ),
-              if (_isSigup())
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Confirmar Senha'),
-                  keyboardType: TextInputType.emailAddress,
-                  obscureText: true,
-                  validator: (confirmPassword) {
-                    final inputConfigPassword = confirmPassword ?? '';
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                if (_isSigup())
+                  AnimatedContainer(
+                    constraints: BoxConstraints(
+                      minHeight: _isLogin() ? 0 : 60,
+                      maxHeight: _isLogin() ? 0 : 4120,
+                    ),
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.linear,
+                    child: FadeTransition(
+                      opacity: _opacityAnimation!,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: SlideTransition(
+                              position: _slideAnimation!,
+                              child: TextFormField(
+                                decoration: const InputDecoration(labelText: 'Confirmar Senha'),
+                                keyboardType: TextInputType.emailAddress,
+                                obscureText: true,
+                                validator: (confirmPassword) {
+                                  final inputConfigPassword = confirmPassword ?? '';
 
-                    if (inputConfigPassword != _passwordController.text) {
-                      return 'A senha informada não é equivalente  a anterior!';
-                    }
+                                  if (inputConfigPassword != _passwordController.text) {
+                                    return 'A senha informada não é equivalente  a anterior!';
+                                  }
 
-                    return null;
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  ElevatedButton(
+                    onPressed: _submit,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 8,
+                      ),
+                    ),
+                    child: Text(
+                      _isLogin() ? "Login" : "Submit",
+                    ),
+                  ),
+                const SizedBox(
+                  height: 12,
+                ),
+                TextButton(
+                  onPressed: () {
+                    _switchAuthMode();
                   },
-                ),
-              const SizedBox(
-                height: 20,
-              ),
-              if (_isLoading)
-                const CircularProgressIndicator()
-              else
-                ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 8,
-                    ),
-                  ),
                   child: Text(
-                    _isLogin() ? "Login" : "Submit",
+                    _isLogin() ? 'Registrar-se' : 'Voltar',
                   ),
                 ),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  _switchAuthMode();
-                },
-                child: Text(
-                  _isLogin() ? 'Registrar-se' : 'Voltar',
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         builder: (ctx, child) {
