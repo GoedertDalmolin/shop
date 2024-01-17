@@ -54,18 +54,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Shop',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-          ),
-          useMaterial3: true,
-          pageTransitionsTheme: PageTransitionsTheme(
-            builders: {
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+            ),
+            useMaterial3: true,
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
               TargetPlatform.iOS: CustomPageTransitionBuilder(),
-
               TargetPlatform.android: CustomPageTransitionBuilder(),
-            }
-          )
-        ),
+            })),
         routes: {
           AppRoutes.authOrHome: (ctx) => const AuthOrHomePage(),
           AppRoutes.productDetail: (ctx) => const ProductDetailPage(),

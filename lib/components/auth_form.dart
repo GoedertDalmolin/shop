@@ -46,7 +46,7 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
     );
 
     _heightAnimation = Tween(
-      begin: const Size(double.infinity, 340),
+      begin: const Size(double.infinity, 350),
       end: const Size(double.infinity, 400),
     ).animate(
       CurvedAnimation(parent: _controller!, curve: Curves.linear),
@@ -149,7 +149,8 @@ class _AuthFormState extends State<AuthForm> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.sizeOf(context);
     return Card(
-      elevation: 8,
+      surfaceTintColor: Colors.transparent,
+      elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

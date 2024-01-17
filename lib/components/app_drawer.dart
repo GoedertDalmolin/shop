@@ -14,6 +14,7 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
+            backgroundColor: Colors.transparent,
             automaticallyImplyLeading: false,
             title: const Text('Bem vindo Usuário!'),
           ),
@@ -30,7 +31,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Pedidos'),
             onTap: () {
               Navigator.of(context).pushReplacement(
-                CustomRoute(builder: (ctx) => OrdersPage()),
+                CustomRoute(builder: (ctx) => const OrdersPage()),
               );
 
               Navigator.of(context).pushReplacementNamed(AppRoutes.orders);
