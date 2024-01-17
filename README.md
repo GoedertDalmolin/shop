@@ -29,7 +29,7 @@ This app has the following features for managing a store:
 
 ## 👁️ Preview
 
-## 🧪 Tecnologias
+ ## 🧪 Technologies
 This project was developed using the following technologies:
 
 - [Flutter 3.16.7](https://docs.flutter.dev/)
