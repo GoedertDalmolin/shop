@@ -18,6 +18,7 @@ Mobile application for managing an online store.
 
 This repository's main objective is to demonstrate the application developed to train my knowledge during the Flutter course from the company [COD3R](https://www.udemy.com/course/curso-flutter/).
 
+---
 ## ⚙️ Features
 This app has the following features for managing a store:
 
@@ -27,8 +28,12 @@ This app has the following features for managing a store:
 - Product cart management per user.
 - Order Management per user.
 
+---
 ## 👁️ Preview
 
+<img src='.github/auth_page_gif.gif'/>
+
+---
  ## 🧪 Technologies
 This project was developed using the following technologies:
 
@@ -40,6 +45,7 @@ This project was developed using the following technologies:
 - [Provider](https://pub.dev/packages/provider)
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
 
+---
 ## ⚡ Installing
 
 Clone this project using
