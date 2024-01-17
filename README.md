@@ -13,6 +13,7 @@
 
 </div>
 
+---
 ## ℹ️ About this repository
 Mobile application for managing an online store.
 

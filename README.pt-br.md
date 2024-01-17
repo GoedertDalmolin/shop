@@ -13,11 +13,13 @@
 
 </div>
 
+---
 ## ℹ️ Sobre este repositório
 Aplicativo mobile para gerenciamento de uma loja virtual.
 
 O objetivo principal deste repositório é demonstrar o aplicativo desenvolvido para treinar meus conhecimentos durante o curso de Flutter da empresa [COD3R](https://www.udemy.com/course/curso-flutter/).
 
+---
 ## ⚙️ Funcionalidades
 Este app tem as seguintes funcionalidades dentro do gerenciamento de uma loja:
 
@@ -27,8 +29,12 @@ Este app tem as seguintes funcionalidades dentro do gerenciamento de uma loja:
 - Gerenciamento de Carrinho de produtos por usuário.
 - Gerenciamento de Pedidos por usuário.
 
+---
 ## 👁️ Pré-visualização
 
+<img src='.github/auth_page_gif.gif'/>
+
+---
 ## 🧪 Tecnologias
 Este projeto foi desenvolvido usando as seguintes tecnologias:
 
@@ -40,6 +46,7 @@ Este projeto foi desenvolvido usando as seguintes tecnologias:
 - [Provider](https://pub.dev/packages/provider)
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
 
+---
 ## ⚡ Instalação
 
 Primeiramente clone este projeto usando:
