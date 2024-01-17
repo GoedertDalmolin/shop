@@ -40,7 +40,7 @@ This project was developed using the following technologies:
 - [Provider](https://pub.dev/packages/provider)
 - [Shared Preferences](https://pub.dev/packages/shared_preferences)
 
-## ⚡ Instalação
+## ⚡ Installing
 
 Clone this project using
 
