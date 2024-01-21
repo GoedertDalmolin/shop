@@ -31,6 +31,23 @@ This app has the following features for managing a store:
 
 ---
 ## 👁️ Preview
+<h1 align="center">
+    <img src=".github/images/1-login-page.png" width="30%">
+    <img src=".github/images/2-register-page.png" width="30%">
+    <img src=".github/images/3-home-page.png" width="30%">
+</h1>
+
+<h1 align="center">
+    <img src=".github/images/4-product-detail-page.png" width="30%">
+    <img src=".github/images/5-cart-page.png" width="30%">
+    <img src=".github/images/6-drawer-menu-page.png" width="30%">
+</h1>
+
+<h1 align="center">
+    <img src=".github/images/4-orders-page.png" width="30%">
+    <img src=".github/images/5-product-list-page.png" width="30%">
+    <img src=".github/images/6-product-form-page.png" width="30%">
+</h1>
 
 <img src='.github/auth_page_gif.gif'/>
 
