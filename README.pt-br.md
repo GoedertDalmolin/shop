@@ -31,8 +31,28 @@ Este app tem as seguintes funcionalidades dentro do gerenciamento de uma loja:
 
 ---
 ## 👁️ Pré-visualização
+<h1 align="center">
+<img src='.github/auth_page.gif' width="35%">
+<img src='.github/product_detail_animation.gif' width="35%">
+</h1>
 
-<img src='.github/auth_page_gif.gif'/>
+<h1 align="center">
+    <img src=".github/images/1-login-page.png" width="32%">
+    <img src=".github/images/2-register-page.png" width="32%">
+    <img src=".github/images/3-home-shop-page.png" width="32%">
+</h1>
+
+<h1 align="center">
+    <img src=".github/images/4-product-detail-page.png" width="32%">
+    <img src=".github/images/5-cart-page.png" width="32%">
+    <img src=".github/images/6-drawer-menu-page.png" width="32%">
+</h1>
+
+<h1 align="center">
+    <img src=".github/images/7-orders-page.png" width="32%">
+    <img src=".github/images/8-product-list-page.png" width="32%">
+    <img src=".github/images/9-product-form-page.png" width="32%">
+</h1>
 
 ---
 ## 🧪 Tecnologias
