@@ -49,7 +49,9 @@ This app has the following features for managing a store:
     <img src=".github/images/9-product-form-page.png" width="30%">
 </h1>
 
+<h1 align="center">
 <img src='.github/auth_page_gif.gif'/>
+</h1>
 
 ---
  ## 🧪 Technologies
