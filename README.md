@@ -1,6 +1,6 @@
 ---
 
-## Shop App (In progress)
+## Shop App
 
 ---
 
