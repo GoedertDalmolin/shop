@@ -50,7 +50,7 @@ This app has the following features for managing a store:
 </h1>
 
 <h1 align="center">
-<img src='.github/auth_page_gif.gif' width="35%">
+<img src='.github/auth_page.gif' width="35%">
 <img src='.github/product_detail_animation.gif' width="35%">
 </h1>
 
